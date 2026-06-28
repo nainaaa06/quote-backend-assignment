@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url = env("DATABASE_URL")
+}
+model QuoteRequest {
+  id              Int      @id @default(autoincrement())
+  customer        String
+  project         String
+  status          String
+  estimated_value Float
+  created_date    DateTime @default(now())
+
+  analysisResult AnalysisResult?
+}
+
+model AnalysisResult {
+  id            Int      @id @default(autoincrement())
+  quote_id      Int      @unique
+  risk          String
+  confidence    Int
+  missing_items String
+  analyzed_at   DateTime @default(now())
+
+  quote QuoteRequest @relation(fields: [quote_id], references: [id])
+}
